@@ -1,3 +1,4 @@
+import Problem1.InOrderTraverse;
 import Problem1.TreeNode;
 import Problem3.InsertInBST;
 import org.junit.Test;
@@ -20,6 +21,15 @@ public class Problem3Test {
             this.expect = expect;
         }
     }
+    public static class IOTestCases<T> {
+        final TreeNode<T> tree;
+        final List<T> expect;
+
+        public IOTestCases(TreeNode<T> tree, List<T> expect) {
+            this.tree = tree;
+            this.expect = expect;
+        }
+    }
 
     @Test
     public void testInsertBST() {
@@ -34,8 +44,13 @@ public class Problem3Test {
 
     @Test
     public void testInOrderTraverse() {
-        // homework
-        // to verify inOrderTraverse(TreeNode<Integer> node)
+        List<IOTestCases<Integer>> testCases = getIOTestCases();
+
+        for (int i = 0; i < testCases.size(); i++) {
+            IOTestCases<Integer> testCase = testCases.get(i);
+            List<Integer> result = inOrderTraverse(testCase.tree);
+            assertEquals(testCase.expect, result);
+        }
     }
 
     private static List<Integer> inOrderTraverse(TreeNode<Integer> node) {
@@ -52,7 +67,18 @@ public class Problem3Test {
         result.add(node.val);
         inOrderTraverse(node.right, result);
     }
-
+    private List<IOTestCases<Integer>> getIOTestCases() {
+        List<IOTestCases<Integer>> testCases = new ArrayList<>();
+        TreeNode<Integer> root = new TreeNode<>(2);
+        root = new TreeNode<>(9);
+        root.left = new TreeNode<>(5);
+        root.left.left = new TreeNode<>(3);
+        root.left.right = new TreeNode<>(6);
+        root.right = new TreeNode<>(10);
+        root.right.right = new TreeNode<>(13);
+        testCases.add(new IOTestCases<>(root, Arrays.asList(3, 5, 6, 9, 10, 13)));
+        return testCases;
+    }
 
     private List<BSTTestCase<Integer>> getBSTTestCases() {
         List<BSTTestCase<Integer>> testCases = new ArrayList<>();
@@ -146,9 +172,12 @@ public class Problem3Test {
         //    N   N
         // homework
         // what problem can you see for insertInBst from this test case?
-        // answer:
+        // answer: The issue with this test case is that the expected test cases do not account for
+        // the previous values being added to the tree, for instance the second test case adds 3 to the list
+        // but it also counts on 2 being already in the tree, which it won't be.
         // discuss how you would solve it in a comment below
-        // answer:
+        // answer: update the root.left or root.right with the proper value that should have been added in the
+        // previous test case.
         root = new TreeNode<>(1);
         testCases.add(new BSTTestCase<>(root, 2, Arrays.asList(1, 2)));
         testCases.add(new BSTTestCase<>(root, 3, Arrays.asList(1, 2, 3)));
